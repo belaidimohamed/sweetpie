@@ -22,4 +22,4 @@ class Song(models.Model):
    is_favorite = models.BooleanField(default='False')
    is_public = models.BooleanField(default='False')
    def __str__(self):
-        return self.title + self.song_file.url.split('.')[-1].lower()
+        return self.title 
