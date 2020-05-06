@@ -12,5 +12,5 @@ urlpatterns = [
     path('albums/<int:id>/delete',views.DeleteAlbum.as_view(),name="delete-album"),
     path('albums/<int:id>/addsong/',views.CreateSong,name="add-song"),
     path('albums/<int:album_id>/DeleteSong/<int:song_id>',views.DeleteSong,name="song-delete"),
-    path('<string:user.username>/',views.profile.as_view(),name="profile"),
+    path('albums/profile/',views.profile.as_view(),name="profile"),
     ]
