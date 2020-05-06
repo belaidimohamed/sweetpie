@@ -1,0 +1,15 @@
+{% extends 'music/base.html'%}
+{% block body %}
+<div style="margin-top:100px;" class="container mt-5">
+    <div style="text-align: center">
+
+      <h1>Make Your Playlist</h1><br>
+      <p class="lead">Come create your playlist and listen to your favorite songs ... All you need to do is sign up!</p>
+      <div class="text-center">
+        <a href="{% url 'music:register' %}"  class="btn btn-primary btn-lg">Register</a>
+        <button style="margin:10px;" class="btn btn-info btn-lg">Learn more</button>
+      </div>
+ </div>
+  
+
+{% endblock body %}

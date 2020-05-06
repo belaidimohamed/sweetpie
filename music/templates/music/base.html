@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %} Viberr{% endblock title %}</title>
+  {% load static %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="{% static 'music/index_style.css' %}" />
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-inverse">
+    <!-- inverse make it black   -->
+    <div class="container-fluid">
+      <!-- ???   -->
+
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+          <span class="icon-bar"></span>
+          <!-- this button appears when ecran is small   -->
+          <span class="icon-bar"></span>
+          <!-- those are lines -->
+          <span class="icon-bar"></span>
+        </button>
+        <a  class="navbar-brand" href="{% url 'music:index' %}"> Sweet Pie </a>
+      </div>
+
+
+      <div class="collapse navbar-collapse" id="topNavBar">
+
+        <ul class="nav navbar-nav">
+          <li class="{% if request.path == '/albums/' %} active {% endif %}">
+            <a href="{% url 'music:albums' %}">
+              <span class="glyphicon glyphicon-cd" aria-hidden="true"></span>&nbsp; Albums</a>
+          </li>
+          <li class="">
+            <a href="{% url 'music:index' %}">
+              <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp; Songs</a>
+          </li>
+        </ul>
+        
+        <form class="navbar-form navbar-left" role="search" method="get" action="#">
+          <div class="form-group"> 
+            <input list="browsers" name="browser"  class="form-control">
+          </div>
+          <datalist id="browsers">
+            <option value="Internet Explorer">
+            <option value="Firefox">
+            <option value="Chrome">
+            <option value="Opera">
+            <option value="Safari">
+          </datalist>
+          <button type="submit" class="btn btn-dark" data-target="#topNavBar">Search</button>
+        </form>
+        
+        <ul class="nav navbar-nav navbar-right">
+          {% if not user.is_authenticated %}
+            <li class="">
+              <a href="{% url 'music:login' %}" class="btn btn-dark" role="button">
+                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Log in</a>
+            </li>
+          {% endif %}
+ 
+          
+          {% if user.is_authenticated %}
+          <li class="">
+            <a href="{% url 'music:profile' %}" class="btn btn-dark" role="button">
+              <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Welcome {{user.username}}</a>
+          </li>
+          <li class="">
+            <a href="{% url 'music:add-album' %}">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Albums</a>
+          </li>
+          <li class="">
+            <a href="{% url 'music:logout' %}">
+              <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Log out</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+  {% block body %} {% endblock body %}
+</body>
+
+</html>

@@ -1,0 +1,114 @@
+{% extends 'music/base.html' %}
+{% block title %}{{ album }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid songs-container">
+
+    <div class="row">
+
+        <!-- Left Album Info -->
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a href="{% url 'music:detail' album.id %}">
+                        {% if album.album_file.url %}
+                            <img src="{{ album.album_file.url }}" class="img-responsive">
+                        {% else %}
+                            <h3>No image to display</h3>
+                        {% endif %}
+                    </a>
+                    <h1>{{ album.album_title }} <small>{{ album.genre }}</small></h1>
+                    <h2>{{ album.artist }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Song Info -->
+        <div class="col-sm-8 col-md-9">
+
+            <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                <li role="presentation" class="active"><a href="">View All</a></li>
+                <li role="presentation"><a href="{% url 'music:add-song' album.id %}">Add New Song</a></li>
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>All Songs</h3>
+
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Audio File</th>
+                            <th>Favorite</th>
+                            <th>Share</th>
+                            <th>Actions</th>
+                            <th>Download</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for song in album.song_set.all %}
+                            <tr>
+                                <td>{{ song.title }}</td>
+                                <td>
+                                    
+                                    <audio id="{{song.id}}" src="{{ song.song_file.url }}"></audio>
+                                    <!--
+                                    <div> 
+                                    <button onclick="document.getElementById('player').play()">Play</button> 
+                                    <button onclick="document.getElementById('player').pause()">Pause</button> 
+                                    <button onclick="document.getElementById('player').volume += 0.1">Vol +</button> 
+                                    <button onclick="document.getElementById('player').volume -= 0.1">Vol -</button> 
+                                    </div>
+                                    -->
+                                    <button onclick="document.getElementById('{{song.id}}').play()" 
+                                    type="button" class="btn btn-success btn-xs">
+                                     <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                                    </button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <button onclick="document.getElementById('{{song.id}}').pause()" class="btn btn-warning btn-xs">
+                                        <span class="glyphicon glyphicon-pause"></span>&nbsp; pause
+                                    </button>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn-favorite"><span class="glyphicon glyphicon-star {% if song.is_favorite %}active{% endif %}"></span></a>
+                                </td>
+                                
+                                <td>
+                                    <a href="#" class="btn-favorite"><span class="glyphicon glyphicon-share {% if song.is_public %}active{% endif %}"></span></a>
+                                </td>
+
+                                <td>
+                                    <form action="{% url 'music:song-delete' album.id song.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="song_id" value="{{ song.id }}" />
+                                        <button type="submit" class="btn btn-danger btn-xs">
+                                            <span class="glyphicon glyphicon-remove"></span>&nbsp; Delete
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    
+                                    <a class="btn btn-info btn-xs" href="{{song.song_file.url}}"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; Download </a>
+                                      
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
