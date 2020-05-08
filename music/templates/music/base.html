@@ -41,24 +41,11 @@
               <span class="glyphicon glyphicon-cd" aria-hidden="true"></span>&nbsp; Albums</a>
           </li>
           <li class="">
-            <a href="{% url 'music:index' %}">
+            <a href="{% url 'music:songs' %}">
               <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp; Songs</a>
           </li>
         </ul>
         
-        <form class="navbar-form navbar-left" role="search" method="get" action="#">
-          <div class="form-group"> 
-            <input list="browsers" name="browser"  class="form-control">
-          </div>
-          <datalist id="browsers">
-            <option value="Internet Explorer">
-            <option value="Firefox">
-            <option value="Chrome">
-            <option value="Opera">
-            <option value="Safari">
-          </datalist>
-          <button type="submit" class="btn btn-dark" data-target="#topNavBar">Search</button>
-        </form>
         
         <ul class="nav navbar-nav navbar-right">
           {% if not user.is_authenticated %}

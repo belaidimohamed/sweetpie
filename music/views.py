@@ -1,26 +1,26 @@
-from django.shortcuts import render , redirect , get_object_or_404
+from django.shortcuts import render , redirect , get_object_or_404 , render_to_response
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.views.generic import CreateView , UpdateView , DeleteView , View , DetailView , ListView
 from django.urls import reverse_lazy
 from .models import Album , Song
+from django.db.models import Q
+
 
 from .forms import RegisterForm , LoginForm , SongForm
 # Create your views here.
 
-class Index(ListView):
-    model = Album
-    template_name = "music/index.html"
-    context_object_name = "all_albums"
-    def get_queryset(self):
-        return  Album.objects.all()
+def Index(request):
+    albums = Album.objects.all()
+    songs = Song.objects.all()
+    return render(request, 'music/index.html', {'songs':songs,"all_albums":albums} )
 
 class DetailView(DetailView):
     model = Album
     template_name = 'music/detail.html'
     pk_url_kwarg = 'id'
 
-# ---------------------------------------- album shit -------------------------------------------------------
+# ------------------------------------------ album shit -------------------------------------------------------
 
 class albums(ListView):
     model = Album
@@ -37,7 +37,27 @@ class DeleteAlbum(DeleteView):
     pk_url_kwarg = 'id'
 
     success_url = reverse_lazy('music:albums')
-#-------------------------------------------- Songs shit -----------------------------------------------------
+
+def album_is_public(request , album_id):
+    if not request.user.is_authenticated:
+        return redirect('music:login')
+    album = get_object_or_404(Album,pk=album_id)
+    album.is_public = True
+    album.save()
+    songs = album.song_set.all()
+    for song in songs :
+        if song.is_public == False :
+            song.is_public = True
+            song.save()
+        else :
+            song.is_public = False
+            song.save()
+    
+    return render(request , 'music/profile.html')
+
+
+
+#---------------------------------------------- Songs shit -------------------------------------------------------
 
 def CreateSong(request , id):
     form = SongForm(request.POST or None , request.FILES)
@@ -66,7 +86,45 @@ def DeleteSong(request , album_id ,song_id):
     song = Song.objects.get(pk=song_id)
     song.delete()
     return render(request , 'music/detail.html',{'album':album})
-# --------------------------------------------- account shit ------------------------------------------------
+
+def song_is_public(request , album_id , song_id):
+    if not request.user.is_authenticated:
+        return redirect('music:login')
+    album = get_object_or_404(Album,pk=album_id)
+    song = Song.objects.get(pk=song_id)
+    album.is_public = True
+    if song.is_public == False :
+        song.is_public = True
+    else :
+        song.is_public = False
+    album.save()
+    song.save()
+    return render(request , 'music/detail.html',{'album':album})
+
+def song_is_favorite(request , album_id , song_id):
+    if not request.user.is_authenticated:
+        return redirect('music:login')
+    album = get_object_or_404(Album,pk=album_id)
+    song = Song.objects.get(pk=song_id)
+    if song.is_favorite == False :
+        song.is_favorite = True
+    else :
+        song.is_favorite = False
+    song.save()
+    return render(request , 'music/detail.html',{'album':album})
+
+# --------------------------------------------- account shit ---------------------------------------------------------
+
+def songs(request):
+    songs = Song.objects.all()
+    x='0'
+    if request.POST :
+        if request.POST.get('favorite') == "True" :
+            x='1'
+            songs = Song.objects.filter(is_favorite=request.POST.get('favorite'))
+
+    return render(request, 'music/songs.html', {'songs':songs,'x':x})
+
 
 class profile(ListView):
     model = Album
@@ -102,6 +160,7 @@ def Register(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
+                return redirect('music:profile')
                
     context = {
         "form": form,
@@ -111,3 +170,17 @@ def Register(request):
 def logoutView(request):
     logout(request)
     return redirect('music:index')
+
+def getQuerySet(query=None):
+    query_set = []
+    for q in query.split(" "): # Convert it to list
+        posts = Song.objects.filter(Q(title__icontains=q)).distinct()
+        for post in posts:
+            query_set.append(post)
+
+    return list(set(query_set))
+
+def dropdown(request):
+    return render_to_response('music/base.html', {
+        'songs': Song.objects.all()
+        })

@@ -11,7 +11,7 @@
         </div>
         {% if all_albums %}
             {% for album in all_albums %}
-                {% if user.request == album.user or not album.is_public %}
+                {% if user.request == album.user or album.is_public %}
                   
                     <div class="col-sm-7 col-lg-3">
                         <div class="thumbnail">
@@ -25,7 +25,7 @@
                                 <!-- View Details -->
                                 <a href="{% url 'music:detail' album.id %}" 
                                 class="btn btn-primary btn-sm" role="button">View Details {{album.id}}</a>
-                                {% if user.request == album.user  %}
+                                {% if user.id == album.user.id  %}
                                     <!-- Delete Album -->
                                     <form action="{% url 'music:delete-album' album.id %}" method="post" style="display: inline;">
                                         {% csrf_token %}
@@ -34,10 +34,9 @@
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
                                     </form>
-
-                                    <!-- Favorite Album -->
-                                    <a href="#" class="btn btn-default btn-sm btn-favorite" role="button">
-                                        <span class="glyphicon glyphicon-star {% if album.is_favorite %}active{% endif %}"></span>
+                                    <!-- Publish Album -->
+                                    <a href="{% url 'music:album_public' album.id %}" class="btn btn-default btn-sm btn-favorite" role="button">
+                                        <span class="glyphicon glyphicon-share" {% if album.is_public %}style="color:orange;"{% endif %}></span>
                                     </a>
 
                                 {% endif %}

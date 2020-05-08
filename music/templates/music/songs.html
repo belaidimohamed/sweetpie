@@ -1,40 +1,24 @@
 {% extends 'music/base.html' %}
-{% block title %}{{ album }}{% endblock %}
+{% block title %}{{ song.album }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid songs-container">
-
-    <div class="row">
-
-        <!-- Left Album Info -->
-        <div class="col-sm-4 col-md-3">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <a href="{% url 'music:detail' album.id %}">
-                        {% if album.album_file.url %}
-                            <img src="{{ album.album_file.url }}" class="img-responsive">
-                        {% else %}
-                            <h3>No image to display</h3>
-                        {% endif %}
-                    </a>
-                    <h1>{{ album.album_title }} <small>{{ album.genre }}</small></h1>
-                    <h2>{{ album.artist }}</h2>
-                </div>
-            </div>
-        </div>
-
+       
         <!-- Right Song Info -->
-        <div class="col-sm-8 col-md-9">
-
-            <ul class="nav nav-pills" style="margin-bottom: 10px;">
-                <li role="presentation" class="active"><a href="">View All</a></li>
-                <li role="presentation"><a href="{% url 'music:add-song' album.id %}">Add New Song</a></li>
-            </ul>
-
+        <div class="">
+            <form class="form-group"  method="post">
+                {% csrf_token %}
+                <h3>Filter your songs : </h3>
+                <select name="favorite">
+                  <option value="False" >All</option>
+                  <option value="True"  {% ifequal x '1' %} selected {% endifequal %}>My favorite</option>
+                </select>
+                <input  class="btn btn-success btn-sm"  type="submit" value="Apply">
+            </form>
             <div class="panel panel-default">
                 <div class="panel-body">
 
-                    <h3>All Songs</h3>
+                    <h3>All Favorites Songs</h3>
 
                     {% if error_message %}
                         <p><strong>{{ error_message }}</strong></p>
@@ -52,7 +36,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            {% for song in album.song_set.all %}
+                            {% for song in songs %}
                             {% if song.is_public or user.id == song.album.user.id %}
     
                             <tr>
@@ -79,23 +63,23 @@
                                 </td>
                             
                                 <td>
-                                    {% if user.id == album.user.id  %}
-                                    <a href="{% url 'music:song_favorite' album.id song.id %}" class="btn-favorite" role="button">
+                                    {% if user.id == song.album.user.id  %}
+                                    <a href="{% url 'music:song_favorite' song.album.id song.id %}" class="btn-favorite" role="button">
                                         <span class="glyphicon glyphicon-star" {% if song.is_favorite %}style="color:orange;"{% endif %}></span>
                                     </a>                                    
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if user.id == album.user.id  %}
-                                    <a href="{% url 'music:song_public' album.id song.id %}" class="btn-favorite" role="button">
+                                    {% if user.id == song.album.user.id  %}
+                                    <a href="{% url 'music:song_public' song.album.id song.id %}" class="btn-favorite" role="button">
                                         <span class="glyphicon glyphicon-share" {% if song.is_public %}style="color:orange;"{% endif %}></span>
                                     </a>                                       
                                     {% endif %}
                                 </td>
                                 
                                 <td>
-                                    {% if user.id == album.user.id  %}
-                                    <form action="{% url 'music:song-delete' album.id song.id %}" method="post" style="display: inline;">
+                                    {% if user.id == song.album.user.id  %}
+                                    <form action="{% url 'music:song-delete' song.album.id song.id %}" method="post" style="display: inline;">
                                         {% csrf_token %}
                                         <input type="hidden" name="song_id" value="{{ song.id }}" />
                                         <button type="submit" class="btn btn-danger btn-xs">
@@ -123,6 +107,5 @@
 
     </div>
 
-</div>
 
 {% endblock %}
