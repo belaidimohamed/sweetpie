@@ -7,7 +7,7 @@ from .models import Album , Song
 from django.db.models import Q
 
 
-from .forms import RegisterForm , LoginForm , SongForm
+from .forms import RegisterForm , LoginForm , SongForm ,AlbumForm
 # Create your views here.
 
 def Index(request):
@@ -28,9 +28,21 @@ class albums(ListView):
     context_object_name = "all_albums"
     def get_queryset(self):
         return  Album.objects.all()
-class AlbumCreate(CreateView):
-    model = Album
-    fields = ['title','artist' ,'album_file']
+def albumCreate(request):
+    if not request.user.is_authenticated:
+        return redirect('music:index')
+
+    form = AlbumForm()
+    if request.POST:
+        form = AlbumForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.save()
+            form = AlbumForm()
+            return redirect('music:index')
+
+    return render(request, 'music/album_form.html', {'form':form})
 
 class DeleteAlbum(DeleteView):
     model = Album

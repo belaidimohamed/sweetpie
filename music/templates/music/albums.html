@@ -19,9 +19,7 @@
                                 <img src="{{album.album_file.url}}" style="height:100%;width:200%;" >
                             </a>
                             <div class="caption">
-                                <h2>{{ album.title }}</h2>
-                                <h4>{{ album.artist }}</h4>
-
+                                <h2><strong>{{ album.title }}</strong> - {{ album.artist }}</h2>
                                 <!-- View Details -->
                                 <a href="{% url 'music:detail' album.id %}" 
                                 class="btn btn-primary btn-sm" role="button">View Details {{album.id}}</a>
@@ -38,9 +36,9 @@
                                     <a href="{% url 'music:album_public' album.id %}" class="btn btn-default btn-sm btn-favorite" role="button">
                                         <span class="glyphicon glyphicon-share" {% if album.is_public %}style="color:orange;"{% endif %}></span>
                                     </a>
-                                <h4>uploaded by : {{album.user.username}}</h4>
                                 {% endif %}
-                                
+                                <br>
+                                <p>Uploaded by : {{album.user.username}}</p>
                             </div>
                         </div>
                     </div>

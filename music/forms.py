@@ -27,3 +27,8 @@ class LoginForm(forms.ModelForm):
         if self.is_valid():
             if not authenticate(username=self.cleaned_data['username'], password=self.cleaned_data['password']):
                 raise forms.ValidationError('Error, Invalid username or password!')
+
+class AlbumForm(forms.ModelForm):
+    class Meta:
+        model = Album
+        fields =  ['artist', 'title','is_public','album_file']

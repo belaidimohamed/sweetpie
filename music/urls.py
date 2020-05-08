@@ -7,7 +7,7 @@ urlpatterns = [
     path('login/',views.loginView,name="login"),
     path('logout/',views.logoutView,name="logout"),
 
-    path('addalbum/',views.AlbumCreate.as_view(),name="add-album"),
+    path('addalbum/',views.albumCreate,name="add-album"),
     path('albums/',views.albums.as_view(),name="albums"),
     path('albums/<int:id>/',views.DetailView.as_view(),name="detail"),
     path('albums/<int:id>/delete',views.DeleteAlbum.as_view(),name="delete-album"),
