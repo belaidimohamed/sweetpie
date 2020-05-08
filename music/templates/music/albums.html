@@ -38,7 +38,7 @@
                                     <a href="{% url 'music:album_public' album.id %}" class="btn btn-default btn-sm btn-favorite" role="button">
                                         <span class="glyphicon glyphicon-share" {% if album.is_public %}style="color:orange;"{% endif %}></span>
                                     </a>
-
+                                <h4>uploaded by : {{album.user.username}}</h4>
                                 {% endif %}
                                 
                             </div>
